@@ -3,29 +3,27 @@ import { persist, devtools, createJSONStorage } from 'zustand/middleware';
 import { Like } from '../types';
 import useGetLikesByPostId from '../hooks/useGetLikesByPostId';
 
+// LikeStore インターフェースの定義
 interface LikeStore {
-    likesByPost: Like[];
-    setLikesByPost: (postId: string) => void;
+    likesByPost: Like[]; // 投稿ごとのいいねリスト
+    setLikesByPost: (postId: string) => void; // 投稿ごとのいいねリストを設定するメソッド
 }
 
-// 「いいね!」情報を管理するストア
+// useLikeStore の作成
 export const useLikeStore = create<LikeStore>()(
     devtools(
-      persist(
-        (set) => ({
-          // 投稿ごとの「いいね!」情報
-          likesByPost: [],
-          // 投稿の「いいね!」取得と状態の更新
-          setLikesByPost: async (postId: string) => {
-            const result = await useGetLikesByPostId(postId)
-            set({ likesByPost: result });
-          },
-        }),
-        // ストアの名前とlocalStorageへの保存  
-        {
-          name: 'store',
-          storage: createJSONStorage(() => localStorage)  
-        }
-      )
+        persist(
+            (set) => ({
+                likesByPost: [], // 初期状態では空のいいねリスト
+                setLikesByPost: async (postId: string) => {
+                    const result = await useGetLikesByPostId(postId); // useGetLikesByPostId フックを使って投稿IDに基づいていいねリストを取得
+                    set({ likesByPost: result }); // 取得した結果をいいねリストとして設定
+                },
+            }),
+            {
+                name: 'store',
+                storage: createJSONStorage(() => localStorage),
+            }
+        )
     )
 );
