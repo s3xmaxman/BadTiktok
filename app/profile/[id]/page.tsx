@@ -3,7 +3,7 @@
 import PostUser from "@/app/components/profile/PostUser"
 import MainLayout from "@/app/layouts/MainLayout"
 import { BsPencil } from "react-icons/bs"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useUser } from "@/app/context/user"
 import ClientOnly from "@/app/components/ClientOnly"
 import { ProfilePageTypes, User } from "@/app/types"
@@ -17,6 +17,22 @@ export default function Profile({ params }: ProfilePageTypes) {
     let { postsByUser, setPostsByUser } = usePostStore()
     let { setCurrentProfile, currentProfile } = useProfileStore()
     let { isEditProfileOpen, setIsEditProfileOpen } = useGeneralStore()
+    
+    enum Tab {
+        VIDEOS = 'Videos',
+        LIKED = 'Liked',
+        FOLLOWING = 'Following',
+        FOLLOWERS = 'Followers'
+    }
+    
+    const activeClassName = 'w-60 text-center py-2 text-[17px] font-semibold border-b-2 border-b-black cursor-pointer';
+    const inactiveClassName = 'w-60 text-gray-500 text-center py-2 text-[17px] font-semibold cursor-pointer';
+    
+    const [activeTab, setActiveTab] = useState<Tab>(Tab.VIDEOS);
+
+    const handleClick = (tab: Tab) => {
+        setActiveTab(tab);
+    }
 
     useEffect(() => {
         setCurrentProfile(params?.id)
@@ -86,10 +102,30 @@ export default function Profile({ params }: ProfilePageTypes) {
                     </ClientOnly>
 
                     <ul className="w-full flex items-center pt-4 border-b">
-                        <li className="w-60 text-center py-2 text-[17px] font-semibold border-b-2 border-b-black">Videos</li>
-                        <li className="w-60 text-gray-500 text-center py-2 text-[17px] font-semibold">Liked</li>
-                        <li className="w-60 text-gray-500 text-center py-2 text-[17px] font-semibold">Following</li>
-                        <li className="w-60 text-gray-500 text-center py-2 text-[17px] font-semibold">Followers</li>
+                        <li  
+                            className={activeTab === Tab.VIDEOS ? activeClassName : inactiveClassName}
+                            onClick={() => handleClick(Tab.VIDEOS)}
+                        >
+                         Videos
+                         </li>
+                        <li
+                            className={activeTab === Tab.LIKED ? activeClassName : inactiveClassName}
+                            onClick={() => handleClick(Tab.LIKED)} 
+                        >
+                            Liked
+                        </li>
+                        <li
+                            className={activeTab === Tab.FOLLOWING ? activeClassName : inactiveClassName}
+                            onClick={() => handleClick(Tab.FOLLOWING)} 
+                        >
+                            Following
+                        </li>
+                        <li
+                            className={activeTab === Tab.FOLLOWERS ? activeClassName : inactiveClassName}
+                            onClick={() => handleClick(Tab.FOLLOWERS)} 
+                        >
+                        Followers
+                        </li>
                     </ul>
 
                     <ClientOnly>
