@@ -11,20 +11,25 @@ import { usePostStore } from "@/app/stores/post"
 import { useProfileStore } from "@/app/stores/profile"
 import { useGeneralStore } from "@/app/stores/general"
 import useCreateBucketUrl from "@/app/hooks/useCreateBucketUrl"
+import useGetLikesByPostId from "@/app/hooks/useGetLikesByPostId"
+import { useLikeStore } from "@/app/stores/like"
+
+
 
 export default function Profile({ params }: ProfilePageTypes) {
-    const contextUser = useUser()
+    const contextUser = useUser() 
     let { postsByUser, setPostsByUser } = usePostStore()
     let { setCurrentProfile, currentProfile } = useProfileStore()
     let { isEditProfileOpen, setIsEditProfileOpen } = useGeneralStore()
     
+    
     enum Tab {
         VIDEOS = 'Videos',
         LIKED = 'Liked',
-        FOLLOWING = 'Following',
-        FOLLOWERS = 'Followers'
     }
+
     
+   
     const activeClassName = 'w-60 text-center py-2 text-[17px] font-semibold border-b-2 border-b-black cursor-pointer';
     const inactiveClassName = 'w-60 text-gray-500 text-center py-2 text-[17px] font-semibold cursor-pointer';
     
@@ -112,30 +117,25 @@ export default function Profile({ params }: ProfilePageTypes) {
                             className={activeTab === Tab.LIKED ? activeClassName : inactiveClassName}
                             onClick={() => handleClick(Tab.LIKED)} 
                         >
-                            Liked
-                        </li>
-                        <li
-                            className={activeTab === Tab.FOLLOWING ? activeClassName : inactiveClassName}
-                            onClick={() => handleClick(Tab.FOLLOWING)} 
-                        >
-                            Following
-                        </li>
-                        <li
-                            className={activeTab === Tab.FOLLOWERS ? activeClassName : inactiveClassName}
-                            onClick={() => handleClick(Tab.FOLLOWERS)} 
-                        >
-                        Followers
+                        Liked
                         </li>
                     </ul>
+                    { activeTab === Tab.VIDEOS && (
+                        <ClientOnly>
+                            <div className="mt-4 grid 2xl:grid-cols-6 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-3">
+                                {postsByUser?.map((post, index) => (
+                                    <PostUser key={index} post={post} />
+                                ))}
+                            </div>
+                        </ClientOnly>
+                    )}
 
-                    <ClientOnly>
-                        <div className="mt-4 grid 2xl:grid-cols-6 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-3">
-                            {postsByUser?.map((post, index) => (
-                                <PostUser key={index} post={post} />
-                            ))}
-                        </div>
-                    </ClientOnly>
-
+                    { activeTab === Tab.LIKED && (
+                        <ClientOnly>
+                            <div className="mt-4 grid 2xl:grid-cols-6 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-3"> 
+                            </div>
+                        </ClientOnly>
+                    )}
                     <div className="pb-20" />
                 </div>
             </MainLayout>

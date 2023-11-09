@@ -3,11 +3,13 @@ import { persist, devtools, createJSONStorage } from 'zustand/middleware';
 import { Like } from '../types';
 import useGetLikesByPostId from '../hooks/useGetLikesByPostId';
 
+
 // LikeStore インターフェースの定義
 interface LikeStore {
     likesByPost: Like[]; // 投稿ごとのいいねリスト
     setLikesByPost: (postId: string) => void; // 投稿ごとのいいねリストを設定するメソッド
 }
+ 
 
 // useLikeStore の作成
 export const useLikeStore = create<LikeStore>()(

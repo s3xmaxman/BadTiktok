@@ -144,7 +144,7 @@ export default function EditProfileOverlay() {
                      disabled={isUpdating}
                      className="hover:bg-gray-200 p-1 rounded-md"
                    >
-                   <AiOutlineClose size="25" />
+                   <AiOutlineClose size="25" onClick={() => setIsEditProfileOpen(false)} />
                    </button>
                 </div>
                 <div className={`h-[calc(500px-200px)] ${!uploadedImage ? 'mt-16' : 'mt-[58px]'}`}>
